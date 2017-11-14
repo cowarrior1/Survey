@@ -1,3 +1,10 @@
+/*
+ * Saugat Sthapit
+ * Assignment 2
+ * JAVA 8
+ */
+
+
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -10,9 +17,11 @@ public class MainMenu {
 	public MainMenu() {
 	}
 	
+	//all the cases and their actions
 	public void Menu() {
 		int intChoice;
 		boolean Exit = false;
+		//loops until killed
 		while (Exit == false) {
 			String MainMenu = "-----Menu1-------\n" + "Enter the option you want to use\n" + "1) Create a new Survey\n"
 					+ "2) Create a new Test \n" + "3) Display a Survey\n" + "4) Display a Test \n"
@@ -22,19 +31,21 @@ public class MainMenu {
 			Scanner scan = new Scanner(System.in);
 			String choice = scan.nextLine();
 			FileSerialHandler fsh = new FileSerialHandler();
-
+			//checks whether proper type is passed
 			if (isInt(choice)) {
 				intChoice = Integer.parseInt(choice);
 			} else {
 				System.out.println("Enter choice as integer");
-				intChoice = -9999;
+				intChoice = -9999; //error
 			}
 			switch (intChoice) {
+			// submenus and their actions within the mainmenu's loop
 			case 1: {
 				Survey createdsurvey = new Survey();
 				survey = createdsurvey;
 				System.out.println("Enter the survey name: ");
 				survey.SurveyName = scan.nextLine();
+				//checks whether name is Empty
 				while (survey.SurveyName.isEmpty()) {
 					System.out.println("Null is not valid");
 					survey.SurveyName = scan.nextLine();
@@ -42,7 +53,7 @@ public class MainMenu {
 				System.out.println("Your file: " + survey.SurveyName + " is ready to use.");
 
 				boolean create = true;
-
+				//loops until create = false which is done by entering 7
 				while (create) {
 					String Menu2 = "Menu 2\n" + "		1) Add a new T/F question\n"
 							+ "		2) Add a new multiple choice question\n"
@@ -62,14 +73,18 @@ public class MainMenu {
 						System.out.println("Enter choice as integer");
 						intChoice = -9999;
 					}
+					//intChoice passed as parameter for choices we select
 					switch (intChoice) {
+					//for Survey
 					case 1: {
+					//creates and add True False Question to the ArrayList
 						TrueFalseQuestion truefalsequestion = new TrueFalseQuestion();
 						String test1 = truefalsequestion.create();
 						survey.TFQuestions.add(test1);
 						break;
 					}
 					case 2: {
+						//creates questions and options and adds to ArrayList
 						MultipleChoiceQuestion mcqquestion = new MultipleChoiceQuestion();
 						mcqquestion.create();
 						ArrayList<String> new1 = mcqquestion.multiplechoicequestion;
@@ -79,6 +94,7 @@ public class MainMenu {
 
 						break;
 					}
+					//creates questions and adds to ArrayList
 					case 3: {
 						ShortAnswerQuestion shortanswerquestion = new ShortAnswerQuestion();
 
@@ -86,12 +102,14 @@ public class MainMenu {
 						survey.ShortAnswerQuestions.add(shortanswer);
 						break;
 					}
+					//creates questions adds to ArrayList
 					case 4: {
 						EssayQuestion essayquestion = new EssayQuestion();
 						String essay = essayquestion.create();
 						survey.Essayquestions.add(essay);
 						break;
 					}
+					//creates questions and options and adds to ArrayList
 					case 5: {
 						RankingQuestion ranking = new RankingQuestion();
 						ranking.create();
@@ -101,6 +119,7 @@ public class MainMenu {
 						survey.rankingoptions.addAll(choices);
 						break;
 					}
+					//creates questions and options and adds to ArrayList
 					case 6: {
 						MatchingQuestion matchingquestion = new MatchingQuestion();
 						matchingquestion.create();
@@ -118,6 +137,8 @@ public class MainMenu {
 				break;
 			}
 			case 2: {
+				
+				//for test 
 				Test createtest = new Test();
 				test = createtest;
 				System.out.println("Enter the test name: ");
@@ -151,6 +172,7 @@ public class MainMenu {
 					}
 					switch (intChoice) {
 					case 1: {
+						//creates questions and gets options and adds to ArrayList
 						TrueFalseQuestion truefalsequestion = new TrueFalseQuestion();
 						String test1 = truefalsequestion.create();
 						System.out.println("Enter correct answer (type \"true\" or \"false\"): ");
@@ -166,7 +188,7 @@ public class MainMenu {
 
 					}
 					case 2: {
-
+						//creates questions, options and correctOption and adds to ArrayList
 						MultipleChoiceQuestion mcq = new MultipleChoiceQuestion();
 						mcq.create();
 						ArrayList<String> new1 = mcq.multiplechoicequestion;
@@ -186,6 +208,7 @@ public class MainMenu {
 						break;
 					}
 					case 3: {
+						//creates questions and correctanswer and adds to ArrayList
 						ShortAnswerQuestion shortanswequestion = new ShortAnswerQuestion();
 						String shortanswer = shortanswequestion.create();
 						System.out.println("Enter answer: ");
@@ -228,11 +251,11 @@ public class MainMenu {
 
 			}
 			case 3: {
-				survey.DisplaySurvey();
+				survey.DisplaySurvey(); //displaying survey
 				break;
 			}
 
-			case 4: {
+			case 4: { //displaying test with answers
 				test.DisplaySurvey();
 				System.out.println("The correct answers are: ");
 				System.out.println(test.TFCorrect);
@@ -241,14 +264,24 @@ public class MainMenu {
 				break;
 			}
 
-			case 5: {
+			case 5: { //loads survey
 				System.out.println("Enter survey name to load: ");
 				choice = scan.nextLine();
-				fsh.load(choice);
-				System.out.println(survey.SurveyName + " loaded.");
+				survey = fsh.load(choice); //sends choice as argument to FileSerialHandler and return as type survey
+				if (survey != null) {
+					System.out.println(survey.SurveyName + " loaded.");
+				} else {
+					System.out.println("Error loading survey.");
+				}
 				break;
 			}
-			
+			case 6: {
+				System.out.println("Enter test name to load: ");
+				choice = scan.nextLine();
+				test = fsh.loadTest(choice);
+				System.out.println(test.SurveyName + " loaded.");
+				break;
+			}
 			
 			case 7: {
 				if (survey == null) {
@@ -259,7 +292,15 @@ public class MainMenu {
 				}
 				break;
 				}
-			
+			case 8: {
+				if (test == null) {
+					System.out.println("No test to save.");
+				} else {
+					fsh.save(test);
+					System.out.println(test.SurveyName + " saved.");
+				}
+				break;
+			}
 			case 9: {
 				Exit = true;
 				break;
@@ -272,6 +313,7 @@ public class MainMenu {
 		}
 	}
 
+	//checks proper type argument
 	private boolean isInt(String choice) {
 		try {
 			Integer.parseInt(choice);
